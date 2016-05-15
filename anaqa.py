@@ -38,40 +38,44 @@ class AnaqaApp(QtGui.QMainWindow):
         self.message_box()
 
     def main_window(self):
-        self.setGeometry(50, 50, 650, 650)
+        self.setGeometry(50, 50, 652, 450)
         self.setWindowTitle("Anaqa Product Label Creater")
         self.setWindowIcon(QtGui.QIcon('anaqa_logo.png'))
 
         logo = QtGui.QLabel(self)
-        logo.setGeometry(QtCore.QRect(370, 0, 270, 86))
+        logo.setGeometry(QtCore.QRect(380, 0, 270, 86))
         logo.setText(_fromUtf8(""))
         logo.setPixmap(QtGui.QPixmap(_fromUtf8("anaqa_logo_and_name.png")))
         logo.setObjectName(_fromUtf8("logo"))
 
     def setup_form(self):
-        self.ref_box = self.input_box(30, 70, "prodRef", "Product Reference")
-        self.name_box = self.input_box(30, 2*70, "prodName", "Product Name")
-        self.type_box = self.input_box(30, 3*70, "prodType", "Product Type")
-        self.lot_box = self.input_box(30, 4*70, "prodLot", "Lot Number")
-        self.war_box = self.input_box(30, 5*70, "prodWar", "Warranty")
-        self.cos_box = self.input_box(30, 6*70, "country", "Country of Sale")
-        self.txt_box = self.input_text(30, 7*70, "distib", "Distributor")
+        xx, yy, zz = 30, 70, 350
+        self.ref_box = self.input_box(xx, yy, "prodRef", "Product Reference")
+        self.name_box = self.input_box(xx, 2*yy, "prodName", "Product Name")
+        self.type_box = self.input_box(
+            xx+zz, 2*yy, "prodType", "Product Type", 200)
+        self.lot_box = self.input_box(xx, 3*yy, "prodLot", "Lot Number")
+        self.war_box = self.input_box(
+            xx+zz, 3*yy, "prodWar", "Warranty", 200)
+        self.cos_box = self.input_box(
+            xx+zz, 4*yy, "country", "Country of Sale", 200)
+        self.txt_box = self.input_text(xx, 4*yy, "distib", "Distributor")
 
     def setup_buttons(self):
         createBtn = QtGui.QPushButton(self)
-        createBtn.setGeometry(QtCore.QRect(390, 565, 114, 35))
+        createBtn.setGeometry(QtCore.QRect(380, 390, 110, 35))
         createBtn.setObjectName(_fromUtf8("createButton"))
         createBtn.setText(_fromUtf8("Create"))
         createBtn.clicked.connect(self.create_click)
 
         closeBtn = QtGui.QPushButton(self)
-        closeBtn.setGeometry(QtCore.QRect(510, 565, 114, 35))
+        closeBtn.setGeometry(QtCore.QRect(500, 390, 110, 35))
         closeBtn.setObjectName(_fromUtf8("closeButton"))
         closeBtn.setText(_fromUtf8("Close"))
         closeBtn.clicked.connect(self.close)
 
-    def input_box(self, x, y, name, title):
-        H, W = 25, 300
+    def input_box(self, x, y, name, title, w=300):
+        H, W = 25, w
         label = QtGui.QLabel(self)
         label.setGeometry(QtCore.QRect(x, y, W, H))
         label.setObjectName(_fromUtf8(name+"Label"))
@@ -98,7 +102,7 @@ class AnaqaApp(QtGui.QMainWindow):
         
     def message_box(self):
         self.message = QtGui.QLabel(self)
-        self.message.setGeometry(QtCore.QRect(30, 600, 590, 35))
+        self.message.setGeometry(QtCore.QRect(20, 390, 370, 70))
         self.message.setObjectName(_fromUtf8("messageLabel"))
 
     def create_click(self):
@@ -166,12 +170,14 @@ class AnaqaApp(QtGui.QMainWindow):
         c.setPageRotation(90)
         c.setPageSize((page_W, page_H))
         c.save()
-        self.message.setText("Creating " + self.outFile)
+        self.message.setText(
+            "Creating " + self.outFile.replace(self.cdir, "Documents/"))
 
     def out_file_name(self):
         self.cdir = expanduser("~/Documents")
+        self.cdir += "/"
         self.outFile \
-            = self.cdir + "/" + self.prod_ref + "_" + self.prod_lot + ".pdf"
+            = self.cdir + self.prod_ref + "_" + self.prod_lot + ".pdf"
         print self.outFile
 
     def prod_name_rows(self):
