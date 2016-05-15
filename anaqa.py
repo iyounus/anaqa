@@ -55,10 +55,12 @@ class AnaqaApp(QtGui.QMainWindow):
         self.type_box = self.input_box(
             xx+zz, 2*yy, "prodType", "Product Type", 200)
         self.lot_box = self.input_box(xx, 3*yy, "prodLot", "Lot Number")
-        self.war_box = self.input_box(
-            xx+zz, 3*yy, "prodWar", "Warranty", 200)
-        self.cos_box = self.input_box(
-            xx+zz, 4*yy, "country", "Country of Sale", 200)
+        self.war_cbox = self.combo_box(
+            xx+zz, 3*yy, "prodWar", "Warranty",
+            ["Select", "1 Year", "2 Years", "3 Years", "4 Years", "5 Years"])
+        self.cos_cbox = self.combo_box(
+            xx+zz, 4*yy, "country", "Country of Sale",
+            ["Select", "UK", "Australia","Pakistan"])
         self.txt_box = self.input_text(xx, 4*yy, "distib", "Distributor")
 
     def setup_buttons(self):
@@ -99,7 +101,21 @@ class AnaqaApp(QtGui.QMainWindow):
         text_edit.setObjectName(_fromUtf8(name+"Input"))
         text_edit.setFont(QtGui.QFont("Arial", 14))
         return text_edit
-        
+
+    def combo_box(self, x, y, name, title, items):
+        H, W = 25, 200
+        label = QtGui.QLabel(self)
+        label.setGeometry(QtCore.QRect(x, y, W, H))
+        label.setObjectName(_fromUtf8(name+"Label"))
+        label.setText(_fromUtf8(title))
+
+        selector = QtGui.QComboBox(self)
+        selector.setGeometry(QtCore.QRect(x, y+H, W, H))
+        selector.setObjectName(_fromUtf8(name+"Input"))
+        selector.setFont(QtGui.QFont("Arial", 14))
+        selector.addItems(items)
+        return selector
+    
     def message_box(self):
         self.message = QtGui.QLabel(self)
         self.message.setGeometry(QtCore.QRect(20, 390, 370, 70))
@@ -110,8 +126,8 @@ class AnaqaApp(QtGui.QMainWindow):
         self.prod_name = str(self.name_box.text())
         self.prod_type = str(self.type_box.text())
         self.prod_lot = str(self.lot_box.text())
-        self.prod_war = str(self.war_box.text())
-        self.prod_cos = str(self.cos_box.text())
+        self.prod_war = str(self.war_cbox.currentText())
+        self.prod_cos = str(self.cos_cbox.currentText())
         self.prod_txt = str(self.txt_box.toPlainText())
         if self.bad_input():
             return
@@ -178,7 +194,6 @@ class AnaqaApp(QtGui.QMainWindow):
         self.cdir += "/"
         self.outFile \
             = self.cdir + self.prod_ref + "_" + self.prod_lot + ".pdf"
-        print self.outFile
 
     def prod_name_rows(self):
         rows = []
@@ -192,9 +207,6 @@ class AnaqaApp(QtGui.QMainWindow):
         rows.append(row.strip())
         if len(rows) > 3:
             rows = rows[:3]
-        #     rows.append(self.prod_type)
-        # else:
-        #     rows.append(self.prod_type)
 
         return rows
 
@@ -203,12 +215,16 @@ class AnaqaApp(QtGui.QMainWindow):
 
         qr_code = qr.QrCodeWidget("Anaqa")
         qr_code.addData(unicode(":" + self.prod_name))
-        qr_code.addData(unicode(":" + self.prod_type))
         qr_code.addData(unicode(":" + self.prod_ref))
         qr_code.addData(unicode(":" + self.prod_lot))
-        qr_code.addData(unicode(":" + self.prod_war))
-        qr_code.addData(unicode(":For sale in " + self.prod_cos + " only"))
-        qr_code.addData(unicode(":" + self.prod_txt.replace("\n",":")))
+        if (self.prod_type != ""):
+            qr_code.addData(unicode(":" + self.prod_type))
+        if (self.prod_war != "Select"):
+            qr_code.addData(unicode(":" + self.prod_war))
+        if (self.prod_cos != "Select"):
+            qr_code.addData(unicode(":For sale in " + self.prod_cos + " only"))
+        if (self.prod_txt != ""):
+            qr_code.addData(unicode(":" + self.prod_txt.replace("\n",":")))
 
         qr_code.barHeight = H
         qr_code.barWidth = W
