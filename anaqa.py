@@ -38,7 +38,7 @@ class AnaqaApp(QtGui.QMainWindow):
         self.message_box()
 
     def main_window(self):
-        self.setGeometry(50, 50, 650, 450)
+        self.setGeometry(50, 50, 650, 650)
         self.setWindowTitle("Anaqa Product Label Creater")
         self.setWindowIcon(QtGui.QIcon('anaqa_logo.png'))
 
@@ -49,39 +49,56 @@ class AnaqaApp(QtGui.QMainWindow):
         logo.setObjectName(_fromUtf8("logo"))
 
     def setup_form(self):
-        self.ref_box = self.input_box(30, 80, "prodRef", "Product Reference")
-        self.name_box = self.input_box(30, 2*80, "prodName", "Product Name")
-        self.type_box = self.input_box(30, 3*80, "prodType", "Product Type")
-        self.lot_box = self.input_box(30, 4*80, "prodLot", "Lot Number")
+        self.ref_box = self.input_box(30, 70, "prodRef", "Product Reference")
+        self.name_box = self.input_box(30, 2*70, "prodName", "Product Name")
+        self.type_box = self.input_box(30, 3*70, "prodType", "Product Type")
+        self.lot_box = self.input_box(30, 4*70, "prodLot", "Lot Number")
+        self.war_box = self.input_box(30, 5*70, "prodWar", "Warranty")
+        self.cos_box = self.input_box(30, 6*70, "country", "Country of Sale")
+        self.txt_box = self.input_text(30, 7*70, "distib", "Distributor")
 
     def setup_buttons(self):
         createBtn = QtGui.QPushButton(self)
-        createBtn.setGeometry(QtCore.QRect(390, 350, 114, 35))
+        createBtn.setGeometry(QtCore.QRect(390, 565, 114, 35))
         createBtn.setObjectName(_fromUtf8("createButton"))
         createBtn.setText(_fromUtf8("Create"))
         createBtn.clicked.connect(self.create_click)
 
         closeBtn = QtGui.QPushButton(self)
-        closeBtn.setGeometry(QtCore.QRect(510, 350, 114, 35))
+        closeBtn.setGeometry(QtCore.QRect(510, 565, 114, 35))
         closeBtn.setObjectName(_fromUtf8("closeButton"))
         closeBtn.setText(_fromUtf8("Close"))
         closeBtn.clicked.connect(self.close)
 
     def input_box(self, x, y, name, title):
-        H, W = 35, 300
+        H, W = 25, 300
         label = QtGui.QLabel(self)
         label.setGeometry(QtCore.QRect(x, y, W, H))
         label.setObjectName(_fromUtf8(name+"Label"))
         label.setText(_fromUtf8(title))
 
         line_edit = QtGui.QLineEdit(self)
-        line_edit.setGeometry(QtCore.QRect(x, y+30, W, H))
+        line_edit.setGeometry(QtCore.QRect(x, y+H, W, H))
         line_edit.setObjectName(_fromUtf8(name+"Input"))
+        line_edit.setFont(QtGui.QFont("Arial", 14))
         return line_edit
 
+    def input_text(self, x, y, name, title):
+        H1, H2, W = 25, 80, 300
+        label = QtGui.QLabel(self)
+        label.setGeometry(QtCore.QRect(x, y, W, H1))
+        label.setObjectName(_fromUtf8(name+"Label"))
+        label.setText(_fromUtf8(title))
+
+        text_edit = QtGui.QTextEdit(self)
+        text_edit.setGeometry(QtCore.QRect(x, y+H1, W, H2))
+        text_edit.setObjectName(_fromUtf8(name+"Input"))
+        text_edit.setFont(QtGui.QFont("Arial", 14))
+        return text_edit
+        
     def message_box(self):
         self.message = QtGui.QLabel(self)
-        self.message.setGeometry(QtCore.QRect(30, 5*80, 590, 35))
+        self.message.setGeometry(QtCore.QRect(30, 600, 590, 35))
         self.message.setObjectName(_fromUtf8("messageLabel"))
 
     def create_click(self):
@@ -89,6 +106,9 @@ class AnaqaApp(QtGui.QMainWindow):
         self.prod_name = str(self.name_box.text())
         self.prod_type = str(self.type_box.text())
         self.prod_lot = str(self.lot_box.text())
+        self.prod_war = str(self.war_box.text())
+        self.prod_cos = str(self.cos_box.text())
+        self.prod_txt = str(self.txt_box.toPlainText())
         if self.bad_input():
             return
 
@@ -97,13 +117,13 @@ class AnaqaApp(QtGui.QMainWindow):
 
     def bad_input(self):
         if not match("\d{6}[A-Z]{2}", self.prod_ref):
-            self.message.setText("invalid product ref")
+            self.message.setText("Invalid Product Reference")
             return True
         if self.prod_name == "":
-            self.message.setText("invalid product name")
+            self.message.setText("Invalid Product Name")
             return True
         if not match("\d{6}", self.prod_lot):
-            self.message.setText("invalid lot number")
+            self.message.setText("Invalid Lot Number")
             return True
         return False
 
@@ -118,8 +138,8 @@ class AnaqaApp(QtGui.QMainWindow):
         page_H = 297*mm  # A4
         page_W = 210*mm   # A4
         # coordinates of lower left corner of single label w.r.t. origin
-        box_X = 15.5*mm
-        box_Y = 6.1*mm
+        box_X = 16.5*mm
+        box_Y = 8.1*mm
         # distance between rows and columns of labels
         box_X_shift = 46.2*mm
         box_Y_shift = 36.0*mm
@@ -130,12 +150,12 @@ class AnaqaApp(QtGui.QMainWindow):
 
         # horizontal lines
         for i in range(7):
-            c.line(39*mm + i*box_Y_shift, 10*mm,
-                   39*mm + i*box_Y_shift, page_W-10*mm)
+            c.line(41*mm + i*box_Y_shift, 10*mm,
+                   41*mm + i*box_Y_shift, page_W-10*mm)
         # vertical lines
         for i in range(3):
-            c.line(2*mm, 57*mm + i*box_X_shift,
-                   page_H-2*mm, 57*mm + i*box_X_shift)
+            c.line(2*mm, 58*mm + i*box_X_shift,
+                   page_H-2*mm, 58*mm + i*box_X_shift)
 
         for i in range(4):
             dx = box_X + i*box_X_shift
@@ -166,9 +186,9 @@ class AnaqaApp(QtGui.QMainWindow):
         rows.append(row.strip())
         if len(rows) > 3:
             rows = rows[:3]
-            rows.append(self.prod_type)
-        else:
-            rows.append(self.prod_type)
+        #     rows.append(self.prod_type)
+        # else:
+        #     rows.append(self.prod_type)
 
         return rows
 
@@ -180,6 +200,10 @@ class AnaqaApp(QtGui.QMainWindow):
         qr_code.addData(unicode(":" + self.prod_type))
         qr_code.addData(unicode(":" + self.prod_ref))
         qr_code.addData(unicode(":" + self.prod_lot))
+        qr_code.addData(unicode(":" + self.prod_war))
+        qr_code.addData(unicode(":For sale in " + self.prod_cos + " only"))
+        qr_code.addData(unicode(":" + self.prod_txt.replace("\n",":")))
+
         qr_code.barHeight = H
         qr_code.barWidth = W
         qr_draw = Drawing()
