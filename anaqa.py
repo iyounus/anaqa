@@ -60,7 +60,7 @@ class AnaqaApp(QtGui.QMainWindow):
              "Silver Nano Coating"])
         self.war_cbox = self.combo_box(
             xx+zz, 3*yy, "prodWar", "Warranty",
-            ["Select", "3 Years", "5 Years", "7 Years"])
+            ["Select", "2 Years", "5 Years", "7 Years"])
         self.cos_cbox = self.combo_box(
             xx+zz, 4*yy, "country", "Country of Sale",
             ["Select", "UK", "Australia","Pakistan"])
@@ -134,7 +134,7 @@ class AnaqaApp(QtGui.QMainWindow):
         self.prod_lot = str(self.lot_box.text())
         self.prod_war = str(self.war_cbox.currentText())
         self.prod_cos = str(self.cos_cbox.currentText())
-        self.prod_dist = str(self.dsit_box.text())
+        self.prod_dist = str(self.dist_box.text())
         if self.bad_input():
             return
 
@@ -165,7 +165,7 @@ class AnaqaApp(QtGui.QMainWindow):
         page_W = 210*mm   # A4
         # coordinates of lower left corner of single label w.r.t. origin
         box_X = 16.5*mm
-        box_Y = 8.6*mm
+        box_Y = 9.6*mm
         # distance between rows and columns of labels
         box_X_shift = 46.2*mm
         box_Y_shift = 36.0*mm
@@ -176,8 +176,8 @@ class AnaqaApp(QtGui.QMainWindow):
 
         # horizontal lines
         for i in range(7):
-            c.line(41*mm + i*box_Y_shift, 10*mm,
-                   41*mm + i*box_Y_shift, page_W-10*mm)
+            c.line(42*mm + i*box_Y_shift, 10*mm,
+                   42*mm + i*box_Y_shift, page_W-10*mm)
         # vertical lines
         for i in range(3):
             c.line(2*mm, 58*mm + i*box_X_shift,
@@ -226,10 +226,10 @@ class AnaqaApp(QtGui.QMainWindow):
         qr_code.addData(unicode(":" + self.prod_lot))
         if (self.prod_war != "Select"):
             qr_code.addData(unicode(":" + self.prod_war))
-        if (self.prod_cos != "Select"):
-            qr_code.addData(unicode(":For sale in " + self.prod_cos + " only"))
         if (self.prod_dist != ""):
             qr_code.addData(unicode(":" + self.prod_dist))
+        if (self.prod_cos != "Select"):
+            qr_code.addData(unicode(":For sale in " + self.prod_cos + " only"))
 
         qr_code.barHeight = H
         qr_code.barWidth = W
