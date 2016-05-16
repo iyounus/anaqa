@@ -38,7 +38,7 @@ class AnaqaApp(QtGui.QMainWindow):
         self.message_box()
 
     def main_window(self):
-        self.setGeometry(50, 50, 652, 450)
+        self.setGeometry(50, 50, 652, 440)
         self.setWindowTitle("Anaqa Product Label Creater")
         self.setWindowIcon(QtGui.QIcon('anaqa_logo.png'))
 
@@ -49,34 +49,38 @@ class AnaqaApp(QtGui.QMainWindow):
         logo.setObjectName(_fromUtf8("logo"))
 
     def setup_form(self):
-        xx, yy, zz = 30, 70, 350
+        xx, yy, zz = 30, 70, 370
         self.ref_box = self.input_box(xx, yy, "prodRef", "Product Reference")
         self.name_box = self.input_box(xx, 2*yy, "prodName", "Product Name")
-        self.type_box = self.input_box(
-            xx+zz, 2*yy, "prodType", "Product Type", 200)
         self.lot_box = self.input_box(xx, 3*yy, "prodLot", "Lot Number")
+
+        self.type_cbox = self.combo_box(
+            xx+zz, 2*yy, "prodType", "Product Type",
+            ["Standard Stainless Steel", "Black Nano Coating",
+             "Silver Nano Coating"])
         self.war_cbox = self.combo_box(
             xx+zz, 3*yy, "prodWar", "Warranty",
-            ["Select", "1 Year", "2 Years", "3 Years", "4 Years", "5 Years"])
+            ["Select", "3 Years", "5 Years", "7 Years"])
         self.cos_cbox = self.combo_box(
             xx+zz, 4*yy, "country", "Country of Sale",
             ["Select", "UK", "Australia","Pakistan"])
-        self.txt_box = self.input_text(xx, 4*yy, "distib", "Distributor")
+
+        self.dist_box = self.input_box(xx, 4*yy, "distib", "Distributor")
 
     def setup_buttons(self):
         createBtn = QtGui.QPushButton(self)
-        createBtn.setGeometry(QtCore.QRect(380, 390, 110, 35))
+        createBtn.setGeometry(QtCore.QRect(385, 370, 110, 35))
         createBtn.setObjectName(_fromUtf8("createButton"))
         createBtn.setText(_fromUtf8("Create"))
         createBtn.clicked.connect(self.create_click)
 
         closeBtn = QtGui.QPushButton(self)
-        closeBtn.setGeometry(QtCore.QRect(500, 390, 110, 35))
+        closeBtn.setGeometry(QtCore.QRect(505, 370, 110, 35))
         closeBtn.setObjectName(_fromUtf8("closeButton"))
         closeBtn.setText(_fromUtf8("Close"))
         closeBtn.clicked.connect(self.close)
 
-    def input_box(self, x, y, name, title, w=300):
+    def input_box(self, x, y, name, title, w=330):
         H, W = 25, w
         label = QtGui.QLabel(self)
         label.setGeometry(QtCore.QRect(x, y, W, H))
@@ -89,28 +93,28 @@ class AnaqaApp(QtGui.QMainWindow):
         line_edit.setFont(QtGui.QFont("Arial", 14))
         return line_edit
 
-    def input_text(self, x, y, name, title):
-        H1, H2, W = 25, 80, 300
-        label = QtGui.QLabel(self)
-        label.setGeometry(QtCore.QRect(x, y, W, H1))
-        label.setObjectName(_fromUtf8(name+"Label"))
-        label.setText(_fromUtf8(title))
+    # def input_text(self, x, y, name, title):
+    #     H1, H2, W = 25, 80, 300
+    #     label = QtGui.QLabel(self)
+    #     label.setGeometry(QtCore.QRect(x, y, W, H1))
+    #     label.setObjectName(_fromUtf8(name+"Label"))
+    #     label.setText(_fromUtf8(title))
 
-        text_edit = QtGui.QTextEdit(self)
-        text_edit.setGeometry(QtCore.QRect(x, y+H1, W, H2))
-        text_edit.setObjectName(_fromUtf8(name+"Input"))
-        text_edit.setFont(QtGui.QFont("Arial", 14))
-        return text_edit
+    #     text_edit = QtGui.QTextEdit(self)
+    #     text_edit.setGeometry(QtCore.QRect(x, y+H1, W, H2))
+    #     text_edit.setObjectName(_fromUtf8(name+"Input"))
+    #     text_edit.setFont(QtGui.QFont("Arial", 14))
+    #     return text_edit
 
     def combo_box(self, x, y, name, title, items):
-        H, W = 25, 200
+        H, W = 27, 200
         label = QtGui.QLabel(self)
-        label.setGeometry(QtCore.QRect(x, y, W, H))
+        label.setGeometry(QtCore.QRect(x+4, y, W, H))
         label.setObjectName(_fromUtf8(name+"Label"))
         label.setText(_fromUtf8(title))
 
         selector = QtGui.QComboBox(self)
-        selector.setGeometry(QtCore.QRect(x, y+H, W, H))
+        selector.setGeometry(QtCore.QRect(x, y+H-2, W, H))
         selector.setObjectName(_fromUtf8(name+"Input"))
         selector.setFont(QtGui.QFont("Arial", 14))
         selector.addItems(items)
@@ -118,17 +122,19 @@ class AnaqaApp(QtGui.QMainWindow):
     
     def message_box(self):
         self.message = QtGui.QLabel(self)
-        self.message.setGeometry(QtCore.QRect(20, 390, 370, 70))
+        self.message.setGeometry(QtCore.QRect(12, 355, 370, 70))
         self.message.setObjectName(_fromUtf8("messageLabel"))
+        #self.message.setText("For testing only For testing only")
 
     def create_click(self):
         self.prod_ref = str(self.ref_box.text())
         self.prod_name = str(self.name_box.text())
-        self.prod_type = str(self.type_box.text())
+        type_name = ["Standard", "Black", "Silver"]
+        self.prod_type = type_name[self.type_cbox.currentIndex()]
         self.prod_lot = str(self.lot_box.text())
         self.prod_war = str(self.war_cbox.currentText())
         self.prod_cos = str(self.cos_cbox.currentText())
-        self.prod_txt = str(self.txt_box.toPlainText())
+        self.prod_dist = str(self.dsit_box.text())
         if self.bad_input():
             return
 
@@ -159,7 +165,7 @@ class AnaqaApp(QtGui.QMainWindow):
         page_W = 210*mm   # A4
         # coordinates of lower left corner of single label w.r.t. origin
         box_X = 16.5*mm
-        box_Y = 8.1*mm
+        box_Y = 8.6*mm
         # distance between rows and columns of labels
         box_X_shift = 46.2*mm
         box_Y_shift = 36.0*mm
@@ -211,20 +217,19 @@ class AnaqaApp(QtGui.QMainWindow):
         return rows
 
     def qr_code_gen(self):
-        H, W = 13*mm, 13*mm
+        H, W = 19*mm, 19*mm
 
         qr_code = qr.QrCodeWidget("Anaqa")
         qr_code.addData(unicode(":" + self.prod_name))
+        qr_code.addData(unicode(":" + self.prod_type))
         qr_code.addData(unicode(":" + self.prod_ref))
         qr_code.addData(unicode(":" + self.prod_lot))
-        if (self.prod_type != ""):
-            qr_code.addData(unicode(":" + self.prod_type))
         if (self.prod_war != "Select"):
             qr_code.addData(unicode(":" + self.prod_war))
         if (self.prod_cos != "Select"):
             qr_code.addData(unicode(":For sale in " + self.prod_cos + " only"))
-        if (self.prod_txt != ""):
-            qr_code.addData(unicode(":" + self.prod_txt.replace("\n",":")))
+        if (self.prod_dist != ""):
+            qr_code.addData(unicode(":" + self.prod_dist))
 
         qr_code.barHeight = H
         qr_code.barWidth = W
@@ -235,15 +240,16 @@ class AnaqaApp(QtGui.QMainWindow):
     def draw_single_label(self, dx, dy, canvas):
         # these values are w.r.t the box
         # coordinates of bottom left corner of the qrcode w.r.t to box
-        qr_X = 16*mm
+        qr_X = 10*mm
         qr_Y = 3*mm
         renderPDF.draw(self.qr_code_gen(), canvas, qr_X + dx, qr_Y + dy)
 
-        canvas.setFont("Arial", 6.5)
-        canvas.drawString(1.2*mm + dx, 7.5*mm + dy, "REF")
-        canvas.drawString(5.7*mm + dx, 7.5*mm + dy, self.prod_ref)
-        canvas.drawString(1.2*mm + dx, 5.0*mm + dy, "LOT")
-        canvas.drawString(5.7*mm + dx, 5.0*mm + dy, self.prod_lot)
+        canvas.setFont("Arial", 7.0)
+        #canvas.drawString(1.2*mm + dx, 7.5*mm + dy, "REF")
+        canvas.drawString(1.2*mm + dx, 7.5*mm + dy, self.prod_ref)
+        canvas.setFont("Arial", 6.0)
+        canvas.drawString(1.2*mm + dx, 5.0*mm + dy, "LOT" + self.prod_lot)
+        #canvas.drawString(5.2*mm + dx, 5.0*mm + dy, self.prod_lot)
 
         canvas.setFont("Arial", 10)
         text = self.prod_name_rows()
